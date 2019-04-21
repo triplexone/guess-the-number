@@ -6,7 +6,6 @@ import random
 def scores():
     with open("score_list.txt", "r") as score_file:
         score_list = json.loads(score_file.read())
-        print("Top scores: " + str(score_list))
         return score_list
 
 
@@ -16,7 +15,7 @@ def top_scores():
     return top_score_list
 
 
-def guess_game():
+def guess_game(difficulty = "e"):
     secret = random.randint(1, 30)
     attempts = 0
     score_list = scores()
@@ -27,27 +26,30 @@ def guess_game():
         attempts += 1
 
         if guess == secret:
-            score_list.append({"Name": name, "attempts": attempts, "date": str(datetime.datetime.now())})
+            score_list.append({"Name": name, "attempts": attempts, "date": str(datetime.datetime.now()), "difficulty": difficulty})
 
             with open("score_list.txt", "w") as score_file:
                 score_file.write(json.dumps(score_list))
 
-            print("You've guessed it - congratulations! It's number " + str(secret))
+            print("You've guessed it " + name + " - congratulations! It's number " + str(secret))
             print("Attempts needed: " + str(attempts))
             break
-        elif guess > secret:
+        elif guess > secret and difficulty == "e":
             print("Your guess is not correct... try something smaller")
-        elif guess < secret:
+        elif guess < secret and difficulty == "e":
             print("Your guess is not correct... try something bigger")
+        else:
+            print("Wrong guess")
 
 
 while True:
     play_game = input ("Choose:\n\ta) Play new game\n\tb) See score list\n\tc) Quit game\n").lower()
 
     if play_game == "a":
-        guess_game()
+        difficulty = input("Choose difficulty: (e)asy or (h)ard:\n").lower()
+        guess_game(difficulty = difficulty)
     elif play_game == "b":
-        for score_dict in scores():
-            print(str(score_dict["Name"]) + ": " + str(score_dict["attempts"]) + " attempts, date: " + score_dict.get("date"))
+        for score_dict in top_scores():
+            print(str(score_dict["Name"]) + ": " + str(score_dict["attempts"]) + " attempts, date: " + score_dict.get("date") + ", difficulty: " + score_dict["difficulty"])
     else:
         break
