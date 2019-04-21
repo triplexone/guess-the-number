@@ -34,6 +34,9 @@ def guess_game(difficulty = "e"):
             print("You've guessed it " + name + " - congratulations! It's number " + str(secret))
             print("Attempts needed: " + str(attempts))
             break
+        elif guess < 1 or guess > 30:
+            attempts -= 1
+            print("Choose number between 1 and 30")
         elif guess > secret and difficulty == "e":
             print("Your guess is not correct... try something smaller")
         elif guess < secret and difficulty == "e":
